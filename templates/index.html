@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Delay Prediction</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 50px;
+        }
+        .container {
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">Flight Delay Prediction</h2>
+        <form id="prediction-form">
+            <div class="form-group">
+                <label for="airTime">Air Time (minutes):</label>
+                <input type="number" class="form-control" id="airTime" required>
+            </div>
+            <div class="form-group">
+                <label for="distance">Distance (miles):</label>
+                <input type="number" class="form-control" id="distance" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Predict</button>
+        </form>
+        <br>
+        <div id="result" class="alert alert-info" style="display: none;"></div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#prediction-form').on('submit', function(event) {
+                event.preventDefault();
+                let airTime = $('#airTime').val();
+                let distance = $('#distance').val();
+
+                $.ajax({
+                    url: '/predict',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ AirTime: airTime, Distance: distance }),
+                    success: function(response) {
+                        $('#result').text('Predicted Arrival Delay (minutes): ' + response['Predicted Arrival Delay (minutes)']);
+                        $('#result').show();
+                    },
+                    error: function(error) {
+                        $('#result').text('An error occurred');
+                        $('#result').show();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
